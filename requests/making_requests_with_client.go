@@ -1,5 +1,5 @@
 // To have more control over how requests are made by Go, making a custom http client is the way to go
-package main
+package requests
 
 import (
 	"net/http"
