@@ -8,6 +8,9 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"io/ioutil"
+	"net/url"
+	"encoding/json"
 )
 
 type Game struct {
@@ -18,6 +21,29 @@ type Game struct {
 	HomeWin     float64
 	Draw        float64
 	VisitingWin float64
+}
+
+type Result struct {
+	Game_id int
+	Sms_id int
+	Start_date int
+	Finish_date int
+	Team1 string
+	Team2 string
+	Result string
+	Team1_id int
+	Team2_id int
+	League string
+	Country string
+	League_id int
+	Country_id int
+	Sport_id int
+	Sport_name string
+	Ison_name string
+	League_pos int
+	Ttl int
+	Datdate int
+	Page_order int
 }
 
 var (
@@ -49,6 +75,8 @@ func main() {
 	for _, game := range games {
 		fmt.Println(game)
 	}
+
+	getResults()
 }
 
 func parseDoc(doc *goquery.Document) {
@@ -102,4 +130,33 @@ func parseDoc(doc *goquery.Document) {
 			})
 		})
 	})
+}
+
+func getResults()  {
+	api := "https://www.sportpesa.co.ke/api/results/search"
+	res,  err := http.PostForm(api, url.Values{
+		"date": { "1529182800" },
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer res.Body.Close()
+
+	results, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var gamesResults []Result
+	err = json.Unmarshal([]byte(string(results)), &gamesResults)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, result := range gamesResults {
+		fmt.Printf("%v\n", result)
+	}
+	fmt.Println(len(gamesResults))
+
 }
