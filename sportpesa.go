@@ -135,7 +135,7 @@ func parseDoc(doc *goquery.Document) {
 func getResults()  {
 	api := "https://www.sportpesa.co.ke/api/results/search"
 	res,  err := http.PostForm(api, url.Values{
-		"date": { "1529182800" },
+		"date": { "1532206800" },
 	})
 	if err != nil {
 		log.Fatal(err)
