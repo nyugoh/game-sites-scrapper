@@ -21,8 +21,8 @@ def process_leagues(table):
     urls = [url.get('href') for url in urls[1:]]
     return urls
 
-leagues = process_leagues(tables[16])
-# leagues.append(process_leagues(tables[18]))
+main_leagues = process_leagues(tables[17])
+extra_leagues = process_leagues(tables[18])
 
 # Open each link and download the csv
 def make_file(file):
@@ -39,18 +39,19 @@ def make_file(file):
     else:
         os.mkdir(base+'/'+segments[0])
 
-    if os.path.exists(base+'/'+segments[0]+'/'+segments[1]):
-        pass
-    else:
-        os.mkdir(base+'/'+segments[0]+'/'+segments[1])
+    if segments[1].find('.csv') == -1:
+        if os.path.exists(base + '/' + segments[0] + '/' + segments[1]):
+            pass
+        else:
+            os.mkdir(base + '/' + segments[0] + '/' + segments[1])
 
     # return to base
     os.chdir('/media/joe/Jarvis/Ripos/Go/src/github.com/nyugoh/game-sites-scrapper')
 
 
-def download_csv():
+def download_main_leagues():
     print('Getting csv')
-    for lg in leagues:
+    for lg in main_leagues:
         if lg == 'http://www.football-data.co.uk/matches.php':
             continue
         parsed_page = parse_page(lg)
@@ -67,5 +68,29 @@ def download_csv():
                 print("Retriving file :"+ link)
                 request.urlretrieve('http://football-data.co.uk/'+link, loc)
         print(csv_links)
+        print('Compeleted getting main league files')
 
-download_csv()
+def download_extra_leagues():
+    print('Getting extra leagues csv')
+    for lg in extra_leagues:
+        if lg == 'http://www.football-data.co.uk/matches_new_leagues.php':
+            continue
+        parsed_page = parse_page(lg)
+        links = [link.get('href') for link in parsed_page.find_all('a')]
+        csv_links = []
+        for link in links:
+            if link.find('.csv') > -1:
+                loc = os.getcwd() + '/' + link
+                if os.path.exists(loc):
+                    print(loc+" Already exits")
+                    continue
+                csv_links.append(link)
+                make_file(link)
+                print("Retriving file :"+ link)
+                request.urlretrieve('http://football-data.co.uk/'+link, loc)
+        print(csv_links)
+        print('Completed getting extra leagues files.')
+
+
+download_main_leagues()
+download_extra_leagues()
