@@ -22,13 +22,13 @@ def process_leagues(table):
     return urls
 
 leagues = process_leagues(tables[16])
-leagues.append(process_leagues(tables[18]))
+# leagues.append(process_leagues(tables[18]))
 
-print(leagues)
 # Open each link and download the csv
 def make_file(file):
-    base = '/media/joe/Jarvis/Ripos/Go/src/github.com/nyugoh/game-sites-scrapper/data'
+    base = '/media/joe/Jarvis/Ripos/Go/src/github.com/nyugoh/game-sites-scrapper'
     segments = file.split('/')
+    print("Making file: ", end=" ")
     print(segments)
     if os.getcwd() != base:
         os.chdir(base)
@@ -58,9 +58,13 @@ def download_csv():
         csv_links = []
         for link in links:
             if link.find('.csv') > -1:
+                loc = os.getcwd() + '/' + link
+                if os.path.exists(loc):
+                    print(loc+" Already exits")
+                    continue
                 csv_links.append(link)
                 make_file(link)
-                loc = os.getcwd()+'/data/'+link
+                print("Retriving file :"+ link)
                 request.urlretrieve('http://football-data.co.uk/'+link, loc)
         print(csv_links)
 

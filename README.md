@@ -1,5 +1,5 @@
 # Soccer game sites scrapper
-A Golang web crawler and scrapper to get data from sites
+A Golang & Python web crawler and scrapper to get data from sites
 
 The scrapper fetches a web page and extracts football info and sends it a Google sheet
 
